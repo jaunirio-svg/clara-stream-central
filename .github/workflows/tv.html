@@ -1,0 +1,178 @@
+tv.html
+touch tv.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CLARA_STREAM • Premium Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-color: #141414; /* Cor de fundo Netflix */
+        color: white;
+        font-family: 'Inter', system-ui, sans-serif;
+        overflow-x: hidden;
+      }
+      .gold-text {
+        background: linear-gradient(135deg, #f7e9a0, #d4af37, #b8891a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .channel-card {
+        background-color: #181818;
+        border: 1px solid #333;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+      .channel-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        border-color: #d4af37;
+      }
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 ratio */
+        height: 0;
+        overflow: hidden;
+      }
+      .video-container iframe,
+      .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    
+    <header class="p-6 flex items-center justify-between border-b border-[#333]">
+      <div class="flex items-center gap-3">
+        <span class="h-4 w-4 rounded-full" style="background-image: linear-gradient(135deg, #f7e9a0, #d4af37, #b8891a);"></span>
+        <h1 class="text-3xl font-bold tracking-tight gold-text">CLARA_STREAM</h1>
+      </div>
+      <div class="relative w-full max-w-sm">
+        <input 
+          type="text" 
+          id="search"
+          placeholder="Buscar canal ou filme..." 
+          class="w-full bg-[#181818] border border-[#444] rounded-full py-2.5 px-5 pl-12 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d4af37]"
+        />
+        <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    </header>
+
+    <section id="player-section" class="hidden p-6 bg-[#000] border-b border-[#333]">
+      <div class="max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl video-container card-glass">
+        <p class="text-gray-500 text-center py-20">Selecione um canal abaixo...</p>
+      </div>
+      <div class="max-w-6xl mx-auto mt-4 p-4 flex items-center justify-between">
+          <h2 id="playing-title" class="text-xl font-semibold gold-text">Canal</h2>
+          <button id="close-player" class="text-xs text-gray-400 hover:text-white uppercase tracking-widest">Fechar Player x</button>
+      </div>
+    </section>
+
+    <main class="p-6 md:p-10 max-w-[95rem] mx-auto">
+      <div id="loading" class="text-center py-20 text-gray-500">Buscando canais na rede...</div>
+      <div id="channels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-5">
+        </div>
+    </main>
+
+    <footer class="p-10 mt-10 border-t border-[#333] text-center text-xs text-gray-600">
+        <p class="gold-text font-medium text-sm mb-1">CLARA_STREAM Sync Engine v2.1</p>
+        <p>Interface Otimizada para TV Box 4K & Controles Remotos.</p>
+        <p class="mt-4">José Almir @ 2024</p>
+    </footer>
+
+    <script>
+      // CONFIGURAÇÃO: Coloque aqui o link do seu arquivo de canais
+      const CHANNELS_JSON_URL = "output/channels_verified.json"; 
+
+      const grid = document.getElementById('channels-grid');
+      const searchInput = document.getElementById('search');
+      const playerSection = document.getElementById('player-section');
+      const playerContainer = document.querySelector('#player-section .video-container');
+      const playingTitle = document.getElementById('playing-title');
+      const closePlayer = document.getElementById('close-player');
+      const loading = document.getElementById('loading');
+      
+      let allChannels = [];
+
+      // Função para carregar os canais
+      async function loadChannels() {
+        try {
+          const res = await fetch(CHANNELS_JSON_URL);
+          if (!res.ok) throw new Error("Erro ao carregar");
+          allChannels = await res.json();
+          loading.classList.add('hidden');
+          renderGrid(allChannels);
+        } catch (e) {
+          loading.textContent = "Canais não encontrados. Rode o robô ou limpe o cache.";
+        }
+      }
+
+      // Função para renderizar os cards
+      function renderGrid(channels) {
+        grid.innerHTML = '';
+        channels.forEach(channel => {
+          const card = document.createElement('div');
+          card.className = "channel-card rounded-xl overflow-hidden shadow-lg p-3";
+          card.onclick = () => playChannel(channel);
+
+          // Gera imagem padrão se não tiver logo
+          const logo = channel.logo ? channel.logo : `https://via.placeholder.com/300x169/181818/d4af37?text=${channel.name}`;
+
+          card.innerHTML = `
+            <img src="${logo}" alt="${channel.name}" class="w-full aspect-video object-cover rounded-lg mb-3" onerror="this.src='https://via.placeholder.com/300x169/181818/d4af37?text=${channel.name}'"/>
+            <p class="text-sm font-medium text-gray-200 truncate text-center">${channel.name}</p>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // Função do Player
+      function playChannel(channel) {
+        playingTitle.textContent = channel.name;
+        playerSection.classList.remove('hidden');
+        window.scrollTo(0, 0); // Sobe para o player
+
+        if (channel.url.endsWith('.m3u8') || channel.url.endsWith('.ts')) {
+          // Se for stream direto (precisa do player de vídeo nativo)
+          playerContainer.innerHTML = `
+            <video controls autoplay class="w-full h-full">
+              <source src="${channel.url}" type="application/x-mpegURL">
+              Seu navegador não suporta vídeos HLS (m3u8). Use o Chrome ou uma TV Box.
+            </video>
+          `;
+        } else {
+          // Se for link de embed (ex: YouTube ou site de terceiros)
+          playerContainer.innerHTML = `
+            <iframe src="${channel.url}" frameborder="0" allowfullscreen></iframe>
+          `;
+        }
+      }
+
+      // Fechar Player
+      closePlayer.onclick = () => {
+        playerSection.classList.add('hidden');
+        playerContainer.innerHTML = ''; // Para o áudio
+      }
+
+      // Sistema de Busca
+      searchInput.oninput = (e) => {
+        const query = e.target.value.toLowerCase();
+        const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query));
+        renderGrid(filtered);
+      }
+
+      // Inicia
+      loadChannels();
+    </script>
+  </body>
+</html>
