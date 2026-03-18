@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CLARA_STREAM • Painel Elite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #151515 0, #050505 45%, #000 100%);
+        color: #f5f5f5;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+      .gold-gradient {
+        background-image: linear-gradient(135deg, #f7e9a0, #d4af37, #b8891a);
+      }
+      .gold-text {
+        background: linear-gradient(135deg, #f7e9a0, #d4af37, #b8891a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .card-glass {
+        backdrop-filter: blur(18px);
+        background: rgba(10, 10, 10, 0.92);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-4xl w-full">
+      <header class="mb-10 text-center">
+        <div
+          class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.4)] bg-black/40"
+        >
+          <span
+            class="h-2 w-2 rounded-full gold-gradient shadow-[0_0_18px_rgba(212,175,55,0.8)]"
+          ></span>
+          <span class="text-xs tracking-[0.25em] text-gray-300 uppercase"
+            >CLARA_STREAM PIPELINE</span
+          >
+        </div>
+        <h1 class="mt-6 text-4xl md:text-5xl font-semibold gold-text tracking-wide">
+          Painel Elite • Obsidian &amp; Gold
+        </h1>
+        <p class="mt-3 text-sm md:text-base text-gray-300 max-w-2xl mx-auto">
+          Acompanhe a saúde da sua lista IPTV em tempo real. Status refinado, canais
+          otimizados, prontos para streaming premium.
+        </p>
+      </header>
+
+      <main
+        class="grid grid-cols-1 md:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-6 items-stretch"
+      >
+        <section class="card-glass rounded-2xl p-6 md:p-8">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-semibold gold-text">Status do Pipeline</h2>
+              <p class="text-xs text-gray-400 mt-1">
+                Dados carregados de <code class="text-[0.7rem] text-gray-300">output/pipeline_status.json</code>
+              </p>
+            </div>
+            <span
+              id="server-badge"
+              class="text-xs px-3 py-1 rounded-full border border-emerald-500 text-emerald-300 bg-emerald-500/10 uppercase tracking-wide"
+              >Carregando...</span
+            >
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Última atualização
+              </p>
+              <p id="last-run" class="text-sm md:text-base font-medium text-gray-100">
+                —
+              </p>
+            </div>
+
+            <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Canais online
+              </p>
+              <p
+                id="online-channels"
+                class="text-2xl font-semibold gold-text drop-shadow-[0_0_16px_rgba(212,175,55,0.55)]"
+              >
+                —
+              </p>
+            </div>
+
+            <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Status do servidor
+              </p>
+              <p id="server-status" class="text-sm md:text-base font-medium text-gray-100">
+                —
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-white/5 pt-4 mt-2"
+          >
+            <p class="text-xs text-gray-400 max-w-md">
+              Execute
+              <code
+                class="px-1.5 py-0.5 rounded bg-black/60 border border-white/10 text-[0.7rem]"
+                >python run_pipeline.py</code
+              >
+              para atualizar a lista e então atualize esta página.
+            </p>
+
+            <a
+              href="output/channels.m3u"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full gold-gradient text-black text-sm font-semibold shadow-lg shadow-[rgba(0,0,0,0.6)] hover:brightness-110 transition"
+              download
+            >
+              <span>Baixar channels.m3u</span>
+              <svg
+                class="w-4 h-4"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 2.5V12.5M10 12.5L5.5 8M10 12.5L14.5 8"
+                  stroke="#000"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M4 14.5C4 13.9477 4.44772 13.5 5 13.5H15C15.5523 13.5 16 13.9477 16 14.5V15C16 16.3807 14.8807 17.5 13.5 17.5H6.5C5.11929 17.5 4 16.3807 4 15V14.5Z"
+                  stroke="#000"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </a>
+          </div>
+        </section>
+
+        <aside class="card-glass rounded-2xl p-6 md:p-7 flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-semibold gold-text mb-3">Guia Rápido</h3>
+            <ol
+              class="list-decimal list-inside space-y-2 text-xs text-gray-300 marker:text-[rgba(212,175,55,0.95)]"
+            >
+              <li>Edite o arquivo <code>config/settings.yaml</code> e coloque sua URL M3U.</li>
+              <li>Abra um terminal nesta pasta e instale as dependências.</li>
+              <li>Execute <code>python run_pipeline.py</code> para validar os canais.</li>
+              <li>Atualize esta página para ver o novo status e baixar a lista.</li>
+            </ol>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/5 text-[0.7rem] text-gray-500">
+            <p class="mb-1">
+              Powered by
+              <span class="gold-text font-medium">CLARA_STREAM Async Engine</span>
+            </p>
+            <p>Obsidian &amp; Gold • Experiência feita para monitores 4K e salas escuras.</p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script>
+      async function loadStatus() {
+        const lastRunEl = document.getElementById("last-run");
+        const onlineEl = document.getElementById("online-channels");
+        const statusEl = document.getElementById("server-status");
+        const badgeEl = document.getElementById("server-badge");
+
+        try {
+          const res = await fetch("output/pipeline_status.json", { cache: "no-store" });
+          if (!res.ok) {
+            throw new Error("Status HTTP " + res.status);
+          }
+          const data = await res.json();
+          lastRunEl.textContent = data.last_run || "—";
+          onlineEl.textContent =
+            typeof data.online_channels === "number" ? data.online_channels : "—";
+          statusEl.textContent = data.server_status || "—";
+
+          if (data.server_status === "ONLINE") {
+            badgeEl.textContent = "ONLINE";
+            badgeEl.className =
+              "text-xs px-3 py-1 rounded-full border border-emerald-500 text-emerald-300 bg-emerald-500/10 uppercase tracking-wide";
+          } else if (data.server_status === "ERRO") {
+            badgeEl.textContent = "ERRO";
+            badgeEl.className =
+              "text-xs px-3 py-1 rounded-full border border-red-500 text-red-300 bg-red-500/10 uppercase tracking-wide";
+          } else {
+            badgeEl.textContent = "DESCONHECIDO";
+            badgeEl.className =
+              "text-xs px-3 py-1 rounded-full border border-yellow-500 text-yellow-300 bg-yellow-500/10 uppercase tracking-wide";
+          }
+        } catch (e) {
+          lastRunEl.textContent = "Sem dados";
+          onlineEl.textContent = "0";
+          statusEl.textContent = "Indisponível";
+          badgeEl.textContent = "OFFLINE";
+          badgeEl.className =
+            "text-xs px-3 py-1 rounded-full border border-gray-600 text-gray-300 bg-gray-700/40 uppercase tracking-wide";
+        }
+      }
+
+      loadStatus();
+    </script>
+  </body>
+</html>

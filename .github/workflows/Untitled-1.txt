@@ -1,0 +1,6 @@
+git config --global user.name "Jose almir"
+git config --global user.email "jaunirio@gmail.com"
+git push -u origin main
+pip install requests
+pip install requests
+python run_pipeline.py

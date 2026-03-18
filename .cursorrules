@@ -1,0 +1,3 @@
+- NUNCA altere a estrutura de pastas.
+- SEMPRE use blocos try/except em chamadas de rede.
+- Código deve ser limpo, documentado e pronto para produção.
