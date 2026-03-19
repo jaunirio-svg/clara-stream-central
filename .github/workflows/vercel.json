@@ -1,7 +1,6 @@
 {
-    "version": 2,
-    "public": true,
-    "rewrites": [
-      { "source": "/", "destination": "/tv.html" }
-    ]
-  }
+  "version": 2,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/tv.html" }
+  ]
+}
