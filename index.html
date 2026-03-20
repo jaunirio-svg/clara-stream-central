@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLARA TV V39</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { background: #000; color: gold; font-family: sans-serif; margin: 0; text-align: center; }
+        .header { background: #111; padding: 15px; border-bottom: 2px solid gold; font-weight: bold; }
+        #video-container { width: 100%; max-width: 800px; margin: 15px auto; aspect-ratio: 16/9; background: #111; position: relative; }
+        video { width: 100%; height: 100%; border: 1px solid #333; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; padding: 20px; max-width: 800px; margin: auto; }
+        button { background: #1a1a1a; color: #fff; border: 1px solid gold; padding: 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        button:hover { background: gold; color: #000; }
+    </style>
+</head>
+<body>
+    <div class="header">⭐ CLARA TV PRO - V39</div>
+    <div id="video-container">
+        <video id="video" controls autoplay playsinline muted></video>
+    </div>
+    <div class="grid">
+        <button onclick="play('https://shls-recordnews-br-prod.akamaized.net/out/v1/70868798e401490280f33198083c2710/index.m3u8')">RECORD NEWS</button>
+        <button onclick="play('https://tvbrasil-hls.ebc.com.br/hls/tvbrasil/index.m3u8')">TV BRASIL</button>
+        <button onclick="play('https://rtp-pull-clean.akamaized.net/liverepeater/smil:rtpi.smil/playlist.m3u8')">RTP PORTUGAL</button>
+        <button onclick="play('https://live-01-01-jovempan.noticias.v3.fabric.aws/v1/master.m3u8')">JOVEM PAN</button>
+    </div>
+    <script>
+        var video = document.getElementById('video');
+        var hls = new Hls();
+        function play(url) {
+            if (Hls.isSupported()) {
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url; video.play();
+            }
+        }
+        window.onload = () => play('https://shls-recordnews-br-prod.akamaized.net/out/v1/70868798e401490280f33198083c2710/index.m3u8');
+    </script>
+</body>
+</html>
